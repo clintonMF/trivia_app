@@ -104,7 +104,7 @@ def create_app(test_config=None):
                 "success": True,
                 "deleted": question_id
             })
-        except BaseException:
+        except:
             return abort(422)
 
 
@@ -182,7 +182,6 @@ def create_app(test_config=None):
         data = request.get_json()
         if data is None:
             return abort(400)
-        print(data)
         previous_questions = data.get("previous_questions", None)
         quiz_category = data.get("quiz_category", None)
 
@@ -196,13 +195,20 @@ def create_app(test_config=None):
                     category=quiz_category['id']).all()
 
             question_ids = [question.id for question in questions]
+            # the line above gets the ids of the questions available
+            # in the chosen category
             new_questions = []
+            # the new_questions id holds the questions that are yet to be shown
 
             for id in question_ids:
                 if id not in previous_questions:
                     new_questions.append(id)
-            random_question_id = random.choice(new_questions)
-
+            if len(new_questions) == 0: #this ensures that the session comes to an
+                # end after all questions have been shown.
+                return jsonify({
+                "success": True,
+                })
+            random_question_id = random.choice(new_questions)   #to pick at random.
             question = Question.query.get(random_question_id)
             return jsonify({
                 "success": True,

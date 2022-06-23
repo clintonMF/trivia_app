@@ -119,7 +119,7 @@ class TriviaTestCase(unittest.TestCase):
 
     def test_search_for_a_question_with_result(self):
         res = self.client().post('/questions',
-                                 json={"search_term": "who discovered"})
+                                 json={"searchTerm": "which"})
         data = json.loads(res.data)
 
         self.assertEqual(res.status_code, 200)
@@ -129,7 +129,7 @@ class TriviaTestCase(unittest.TestCase):
 
     def test_422_search_for_a_question_without_result(self):
         res = self.client().post('/questions',
-                                 json={"search_term": "whofdasjkl;jkfdk"})
+                                 json={"searchTerm": "whofdasjkl;jkfdk"})
         data = json.loads(res.data)
 
         self.assertEqual(res.status_code, 422)
@@ -159,11 +159,8 @@ class TriviaTestCase(unittest.TestCase):
         res = self.client().post(
             '/quizzes',
             json={
-                "previous_questions": [
-                    9,
-                    2,
-                    11],
-                "quiz_category": 5})
+                "previous_questions": [9, 2, 11],
+                "quiz_category": {"type":"all", "id": 0}})
         data = json.loads(res.data)
 
         self.assertEqual(res.status_code, 200)
@@ -174,10 +171,7 @@ class TriviaTestCase(unittest.TestCase):
         res = self.client().post(
             '/quizzes',
             json={
-                "previous_questions": [
-                    9,
-                    2,
-                    11]})
+                "previous_questions": [9, 2, 11]})
         data = json.loads(res.data)
 
         self.assertEqual(res.status_code, 400)
@@ -188,10 +182,7 @@ class TriviaTestCase(unittest.TestCase):
         res = self.client().post(
             '/quizzes',
             json={
-                "previous_questions": [
-                    9,
-                    2,
-                    11],
+                "previous_questions": [9, 2, 11],
                 "quiz_category": 100})
         data = json.loads(res.data)
 
